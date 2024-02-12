@@ -4,12 +4,17 @@
 import { mockOne, mockThree, mockTwo, unmockedFunction } from './index';
 import * as console from 'console';
 
-jest.mock('./index', () => ({
-  mockOne: jest.fn(),
-  mockTwo: jest.fn(),
-  mockThree: jest.fn(),
-  unmockedFunction: jest.requireActual('./index').unmockedFunction,
-}));
+jest.mock('./index', () => {
+  const originalModule =
+    jest.requireActual<typeof import('./index')>('./index');
+
+  return {
+    ...originalModule,
+    mockOne: jest.fn(),
+    mockTwo: jest.fn(),
+    mockThree: jest.fn(),
+  };
+});
 
 describe('partial mocking', () => {
   let logSpy: jest.SpyInstance;
